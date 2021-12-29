@@ -1,3 +1,19 @@
 * {
   margin : 0;
 }
+
+.app {
+  background-color: #fafafa;
+  height: 100vh;
+}
+
+.app__header {
+  background-color: white;
+  object-fit: contain;
+  border-bottom: 1px solid lightgray;
+  padding: 20px;
+}
+
+.app__headerImage {
+  height: 50px;
+}
