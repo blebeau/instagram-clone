@@ -1,49 +1,201 @@
 import React, { useState, useEffect } from 'react';
+import Modal from '@mui/material/Modal';
 import './App.css';
 import img1 from './images/logo.png';
 import Post from './Components/Post';
-import { db } from './firebase';
+import { db, auth } from './firebase';
+import { Button, Input } from '@mui/material';
+import { Box } from '@mui/system';
 
-
-// const photo = require('/public/Screen Shot 2021-11-23 at 6.46.35 PM.png');
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  height: '200px',
+  backgroundColor: 'white',
+  display: 'inline-grid',
+  padding: '10px'
+};
 
 function App() {
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [openSignIn, setOpenSignIn] = useState(false);
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        console.log('authUser', authUser);
+        setUser(authUser);
+      } else {
+        setUser(null);
+      }
+    })
+
+    return () => {
+      // clean up before useeffect
+      unsubscribe();
+    }
+  }, [user, username]);
+
+  const signUp = (event) => {
+    event.preventDefault();
+    auth.createUserWithEmailAndPassword(email, password)
+      .then((authUser) => {
+        return authUser.user.updateProfile({
+          displayName: username,
+        })
+      })
+      .catch((error) => alert(error.message));
+    setOpen(false);
+  };
+
+  const signIn = (event) => {
+    event.preventDefault();
+
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .catch((error) => alert(error.message));
+
+    setOpenSignIn(false);
+  }
 
   useEffect(() => {
     db.collection('posts').onSnapshot(snapshot => {
       console.log('snapshot', snapshot);
-      setPosts(snapshot.docs.map(doc => doc.data()))
+      setPosts(snapshot.docs.map(doc => ({
+        id: doc.id,
+        post: doc.data(),
+      })))
     });
   }, [])
 
   return (
     <div className="App">
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}>
+        <form className='app__signup'>
+          <center>
+            <Box style={style}>
+              {/* <div > */}
+              <img
+                style={{
+                  height: '50px',
+                  marginLeft: '125px'
+                }}
+                src={img1}
+                alt="modalImg"
+              >
+              </img>
+              <div
+                style={{
+                  display: 'inline-grid',
+                }}
+              >
+                <Input
+                  placeholder='Username'
+                  type='text'
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <Input
+                  placeholder='Email'
+                  type='text'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <Input
+                  placeholder='Password'
+                  type='text'
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
 
+              <Button
+                onClick={signUp}
+              >Sign Up</Button>
+            </Box>
+          </center>
+        </form>
+      </Modal>
+      <Modal
+        open={openSignIn}
+        onClose={() => setOpenSignIn(false)}>
+        <form className='app__signup'>
+          <center>
+            <Box style={style}>
+              {/* <div > */}
+              <img
+                style={{
+                  height: '50px',
+                  marginLeft: '125px'
+                }}
+                src={img1}
+                alt="modalImg"
+              >
+              </img>
+              <div
+                style={{
+                  display: 'inline-grid',
+                }}
+              >
+                <Input
+                  placeholder='Email'
+                  type='text'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <Input
+                  placeholder='Password'
+                  type='text'
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              <Button
+                onClick={signIn}
+              >Login</Button>
+            </Box>
+          </center>
+        </form>
+      </Modal>
       <div className="app__header">
         <img
           className="app__headerImage"
-
           src={img1}
           alt=""
-        ></img>
+        />
+        {user ? (
+          <Button onClick={() => auth.signOut()}>Logout</Button>) : (
+          <div className='app__loginContainer'>
+            <Button onClick={() => setOpen(true)}>Sign Up</Button>
+            <Button onClick={() => setOpenSignIn(true)}>Sign In</Button>
+          </div>
+        )
 
+        }
       </div>
 
-      {/* Header */}
 
       <h1>Hello Let's build IG</h1>
 
       {
-        posts.map(post =>
-          <Post username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
-        )
+        posts.map(({ id, post }) => (
+          <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
+        ))
       }
-
-      {/* <Post username="Name 1" caption="caption 1" imageUrl={img1} />
-      <Post username="Name 2" caption="caption 2" imageUrl="https://upload.wikimedia.org/wikipedia/commons/3/34/Ezra_Meeker_1921_crop.jpg" />
-      <Post username="Name 3" caption="caption 3" imageUrl={img1} /> */}
-
     </div>
   );
 }
