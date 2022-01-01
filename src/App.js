@@ -4,6 +4,7 @@ import './App.css';
 import img1 from './images/logo.png';
 import Post from './Components/Post';
 import { db, auth } from './firebase';
+import ImageUploader from './ImageUpload';
 import { Button, Input } from '@mui/material';
 import { Box } from '@mui/system';
 
@@ -70,7 +71,7 @@ function App() {
   }
 
   useEffect(() => {
-    db.collection('posts').onSnapshot(snapshot => {
+    db.collection('posts').orderBy('timeStamp', 'desc').onSnapshot(snapshot => {
       console.log('snapshot', snapshot);
       setPosts(snapshot.docs.map(doc => ({
         id: doc.id,
@@ -196,6 +197,9 @@ function App() {
           <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
         ))
       }
+      {user?.displayName ? (
+        <ImageUploader username={user.displayName} />
+      ) : <h3>You must login to post</h3>}
     </div>
   );
 }

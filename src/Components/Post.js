@@ -20,7 +20,8 @@ function Post({ username, caption, imageUrl }) {
             {/* image */}
 
 
-            <h4 className="post__text"><b>{username}</b>{caption}</h4>
+            <h4 className="post__text"><b>{username}</b></h4>
+            <p className="post__text">{caption}</p>
             {/* username + caption */}
 
         </div>
