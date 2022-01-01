@@ -26,3 +26,13 @@
   flex-direction: column;
   text-align: center;
 }
+
+.app__posts {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.app_postsRight {
+  margin-left: 20px;
+}

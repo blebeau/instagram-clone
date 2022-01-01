@@ -6,6 +6,7 @@ import Post from './Components/Post';
 import { db, auth } from './firebase';
 import ImageUploader from './ImageUpload';
 import { Button, Input } from '@mui/material';
+import InstagramEmbed from 'react-instagram-embed';
 import { Box } from '@mui/system';
 
 const style = {
@@ -188,15 +189,35 @@ function App() {
 
         }
       </div>
-
-
-      <h1>Hello Let's build IG</h1>
-
-      {
-        posts.map(({ id, post }) => (
-          <Post key={id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />
-        ))
-      }
+      <div className='app__posts'>
+        <div className='app_postsLeft'>
+          {
+            posts.map(({ id, post }) => (
+              <Post key={id} postId={id}
+                username={post.username}
+                caption={post.caption}
+                imageUrl={post.imageUrl}
+                user={user}
+              />
+            ))
+          }
+        </div>
+        <div className='app_postsRight'>
+          <InstagramEmbed
+            url="https://www.instagram.com/mickjagger/?utm_source=ig_embed&ig_rid=9477018e-b97f-4228-b42e-bbec3e9c7a12"
+            clientAccessToken='123|456'
+            maxWidth={320}
+            hideCaption={false}
+            containerTagName='div'
+            protocol=''
+            injectScript
+            onLoading={() => { }}
+            onSuccess={() => { }}
+            onAfterRender={() => { }}
+            onFailure={() => { }}
+          />
+        </div>
+      </div>
       {user?.displayName ? (
         <ImageUploader username={user.displayName} />
       ) : <h3>You must login to post</h3>}

@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import firebase from "firebase";
 import './imageUpload.css';
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { storage, db } from "./firebase"
 
 function ImageUpload({ username }) {
