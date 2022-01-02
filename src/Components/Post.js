@@ -11,7 +11,6 @@ function Post({ postId, username, caption, imageUrl, user, date }) {
     const [comment, setComment] = useState('');
 
     function postedAgo() {
-        console.log('date', date)
         if (date?.seconds) {
             const timeDifference = (Date.now() / 1000) - date.seconds;
             if (timeDifference <= 59) {

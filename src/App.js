@@ -36,7 +36,6 @@ function App() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
-        console.log('authUser', authUser);
         setUser(authUser);
       } else {
         setUser(null);
@@ -73,7 +72,6 @@ function App() {
 
   useEffect(() => {
     db.collection('posts').orderBy('timeStamp', 'desc').onSnapshot(snapshot => {
-      console.log('snapshot', snapshot);
       setPosts(snapshot.docs.map(doc => ({
         id: doc.id,
         post: doc.data(),
@@ -190,7 +188,6 @@ function App() {
         }
       </div>
       <div className='app__posts'>
-        {console.log('posts', posts)}
         <div className='app_postsLeft'>
           {
             posts.map(({ id, post }) => (
