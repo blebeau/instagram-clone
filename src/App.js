@@ -190,6 +190,7 @@ function App() {
         }
       </div>
       <div className='app__posts'>
+        {console.log('posts', posts)}
         <div className='app_postsLeft'>
           {
             posts.map(({ id, post }) => (
@@ -198,6 +199,7 @@ function App() {
                 caption={post.caption}
                 imageUrl={post.imageUrl}
                 user={user}
+                date={post.timeStamp}
               />
             ))
           }

@@ -6,9 +6,25 @@ import { onSnapshot } from 'firebase/firestore';
 import './Post.css'
 import { db } from '../firebase';
 
-function Post({ postId, username, caption, imageUrl, user }) {
+function Post({ postId, username, caption, imageUrl, user, date }) {
     const [comments, setComments] = useState([]);
     const [comment, setComment] = useState('');
+
+    function postedAgo() {
+        const timeDifference = (Date.now() / 1000) - date.seconds;
+        if (date) {
+            if (timeDifference <= 59) {
+                return <p>New!</p>;
+            } else if (timeDifference <= 3599) {
+                return <p>Posted {Math.round((timeDifference / 60))} minutes ago</p>;
+            } else if (timeDifference <= 86399) {
+                return <p>Posted {Math.round((timeDifference / 60) / 60)} hours ago</p>;
+            } else if (timeDifference > 86399) {
+                return <p>Posted {Math.round(((timeDifference / 60) / 60) / 24)} days ago</p>;
+            }
+        }
+        return <p>New!</p>;
+    }
 
     const postComment = (event) => {
         event.preventDefault();
@@ -49,23 +65,21 @@ function Post({ postId, username, caption, imageUrl, user }) {
                 />
                 <h3>{username}</h3>
             </div>
-
             <img className='post__image' src={imageUrl} alt='img'></img>
-
-            <h4 className="post__text"><b>{username}</b></h4>
+            <h4 className="post__text"><b>{username} </b></h4>
+            <p className="post__text">{caption}</p>
             <div className='post__comments'>
                 {comments.map((comment) => (
-                    <p>
+                    <p className='post__singleComment'>
                         <strong>
-                            {comment.username}
-                        </strong>
+                            {comment.username} </strong>
                         {comment.text}
                     </p>
                 ))
 
                 }
             </div>
-            <p className="post__text">{caption}</p>
+
             <form>
                 <input
                     className='post__input'
@@ -83,6 +97,7 @@ function Post({ postId, username, caption, imageUrl, user }) {
                 </button>
             </form>
 
+            <p>{postedAgo()}</p>
         </div>
     )
 }
