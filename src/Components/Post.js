@@ -11,8 +11,9 @@ function Post({ postId, username, caption, imageUrl, user, date }) {
     const [comment, setComment] = useState('');
 
     function postedAgo() {
-        const timeDifference = (Date.now() / 1000) - date.seconds;
-        if (date) {
+        console.log('date', date)
+        if (date?.seconds) {
+            const timeDifference = (Date.now() / 1000) - date.seconds;
             if (timeDifference <= 59) {
                 return <p>New!</p>;
             } else if (timeDifference <= 3599) {
@@ -61,9 +62,12 @@ function Post({ postId, username, caption, imageUrl, user, date }) {
             <div className='post__header'>
                 <Avatar
                     className='post__avatar'
-                    alt='Alt Name'
+                    alt={username}
+                    src=''
                 />
                 <h3>{username}</h3>
+                &nbsp;
+                <h4>{postedAgo()}</h4>
             </div>
             <img className='post__image' src={imageUrl} alt='img'></img>
             <h4 className="post__text"><b>{username} </b></h4>
@@ -79,8 +83,7 @@ function Post({ postId, username, caption, imageUrl, user, date }) {
 
                 }
             </div>
-
-            <form>
+            <form className='post__commentBox'>
                 <input
                     className='post__input'
                     type="text"
@@ -96,8 +99,6 @@ function Post({ postId, username, caption, imageUrl, user, date }) {
                     Post
                 </button>
             </form>
-
-            <p>{postedAgo()}</p>
         </div>
     )
 }

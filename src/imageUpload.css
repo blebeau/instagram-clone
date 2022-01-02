@@ -2,14 +2,22 @@
     display: flex;
     flex-direction: column;
     width: 60%;
-     margin-left: auto;
-     margin-right: auto;
-     margin-top: 10px;
-     margin-bottom: 10px;
-     background-color: white;
-     
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: lightgray;
 }
 
 .imageupload__progress {
     width: 100%;
+}
+
+.footer {
+    width: 100%; 
+    background-color: lightgray;
+    bottom: 0;
+    position: sticky;
+    border-top: 1px solid gray;
+    overflow-x: hidden;
 }
